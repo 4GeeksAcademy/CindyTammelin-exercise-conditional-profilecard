@@ -29,19 +29,54 @@ function render(variables = {}) {
   let cover = `<div class="cover"><img src="${variables.background}" /></div>`;
   if (variables.includeCover == false) cover = "<div class='cover'></div>";
 
+  // Name
+  let nameHTML = "";
+  if (variables.name || variables.lastName) {
+    const fullName = `${variables.name || ""} ${variables.lastName ||
+      ""}`.trim();
+    nameHTML = `<h1>${fullName}</h1>`;
+  }
+
+  // Role
+  let roleHTML = "";
+  if (variables.role) {
+    roleHTML = `<h2>${variables.role}</h2>`;
+  }
+
+  // Location
+  let locationHTML = "";
+  if (variables.city || variables.country) {
+    const location = [variables.city, variables.country]
+      .filter(Boolean)
+      .join(", ");
+    locationHTML = `<h3>${location}</h3>`;
+  }
+
+  // Social media
+  let socialHTML = "";
+  const socialMedia = [
+    { platform: "twitter", username: variables.twitter },
+    { platform: "github", username: variables.github },
+    { platform: "linkedin", username: variables.linkedin },
+    { platform: "instagram", username: variables.instagram }
+  ].filter(social => social.username !== null && social.username !== "");
+
+  if (socialMedia.length > 0) {
+    let socialLinks = "";
+    socialMedia.forEach(social => {
+      socialLinks += `<li><a href="https://${social.platform}.com/${social.username}" target="_blank"><i class="fab fa-${social.platform}"></i></a></li>`;
+    });
+    socialHTML = `<ul class="${variables.socialMediaPosition}">${socialLinks}</ul>`;
+  }
+
   // reset the website body with the new html output
   document.querySelector("#widget_content").innerHTML = `<div class="widget">
             ${cover}
-          <img src="${variables.avatarURL}" class="photo" />
-          <h1>Lucy Boilett</h1>
-          <h2>Web Developer</h2>
-          <h3>Miami, USA</h3>
-          <ul class="position-right">
-            <li><a href="https://twitter.com/4geeksacademy"><i class="fab fa-twitter"></i></a></li>
-            <li><a href="https://github.com/4geeksacademy"><i class="fab fa-github"></i></a></li>
-            <li><a href="https://linkedin.com/school/4geeksacademy"><i class="fab fa-linkedin"></i></a></li>
-            <li><a href="https://instagram.com/4geeksacademy"><i class="fab fa-instagram"></i></a></li>
-          </ul>
+            <img src="${variables.avatarURL}" class="photo" />
+            ${nameHTML}
+            ${roleHTML}
+            ${locationHTML}
+            ${socialHTML}
         </div>
     `;
 }
